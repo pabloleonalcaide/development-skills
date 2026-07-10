@@ -31,6 +31,23 @@ for your repo; the levels and invariants below are the doctrine.
 - **Exception**: test a domain element directly only when its complexity warrants it (non-trivial
   calculations, many branches, intricate invariants).
 
+```ts
+// ✅ cover the Order aggregate + OrderStatus VO BLACK-BOX, through the use case that exercises them
+it("confirms a draft order and emits OrderConfirmed", async () => {
+  const order = new OrderBuilder().draft().build();      // Builder — no magic literals
+  const orders = new InMemoryOrderRepository([order]);
+
+  const [, aggregate] = await new ConfirmOrder(orders).execute({ orderId: order.id.value });
+
+  expect(orders.saved(order.id)).toHaveStatus("confirmed");              // observable: persisted state
+  expect(aggregate.pullDomainEvents()).toContainEqual(                   // observable: event emitted
+    new OrderConfirmed(order.id.value),
+  );
+});
+// No separate test for Order.confirm() or the OrderStatus value object — they're covered here.
+// You'd add a dedicated test only if, say, OrderStatus had intricate transition rules of its own.
+```
+
 ## Practices
 
 - **AAA** (arrange–act–assert), one behavior per test.
