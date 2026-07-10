@@ -64,7 +64,9 @@ Or copy `skills/*` into your Claude Code skills directory. Then run `/setup` onc
 
 ## Conventions live in your repo, not here
 
-Everything project-specific — test commands, architecture naming, CI, PR rules, the domain glossary — lives in your repo's `.context/`. The skills **read** it; they hardcode nothing. See [`examples/.context/`](./examples/.context/) for the slots each skill expects.
+Everything project-specific — test commands, architecture naming, CI, PR rules, the domain glossary — lives in your repo's `.context/`. The skills **read** it; they hardcode nothing.
+
+Start from [`foundation/`](./foundation/) — a **loaded, opinionated baseline** of DDD/hexagonal/TDD doctrine (core) plus a catalogue of patterns. Copy it into a repo as `.context/` and **extend** it; it is a base to grow, not empty templates. See [`foundation/README.md`](./foundation/README.md).
 
 ## Credit
 
