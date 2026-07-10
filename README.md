@@ -8,15 +8,25 @@ At its center is `develop`: a thin **router** that gives every non-trivial task 
 
 ## The flow
 
-`develop` routes each task through five phases and one of four branches:
+`develop` routes each task through five phases and one of four branches. Phases A–D are common; the branch (detected in Step 0) governs the execution core in phase E and the exit.
 
-```
-Step 0 — detect branch (infer + confirm)
-   A · Discovery      map what the work touches
-   B · Alignment      grill the decision tree  → /grilling (+ /domain-modeling if it touches the domain)
-   C · Blueprint      the single human approval gate  → /to-tickets by signals
-   D · Registration   task in your tracker + branch, after approval
-   E · Implementation build → harden (Standards + Spec) → verify → deliver  → /create-pr
+```mermaid
+flowchart TD
+    S0{"Step 0 · detect branch<br/>infer + confirm"}
+    S0 --> A["A · Discovery<br/>map impact — Plan / Explore"]
+    A --> B["B · Alignment<br/>/grilling (+ /domain-modeling if it touches the domain)"]
+    B --> C{"C · Blueprint<br/>⏸ single human approval gate"}
+    C -->|approved| D["D · Registration<br/>tracker task + branch"]
+    D --> E["E · Implementation<br/>build · harden (Standards + Spec) · verify · deliver"]
+    E --> K{"execution core<br/>by branch"}
+    K -->|feature| F["tdd — RED first"]
+    K -->|bugfix| G["diagnose → regression test"]
+    K -->|refactor| H["existing tests as contract"]
+    K -->|analysis| I["verified report"]
+    F --> PR([Pull Request])
+    G --> PR
+    H --> PR
+    I --> REP([Report — no PR])
 ```
 
 | Branch | When | Execution core | Exit |
