@@ -87,9 +87,9 @@ approval; D–E then run autonomously except for the Checkpoints below.
 1. **Build** = run the branch's execution core (`branches/<branch>.md`). For feature/bugfix
    this is the **TDD loop, RED-first — inomitible**, not "build then test".
 2. **Hardening (two axes + mechanical):**
-   - *Standards* — fresh-eyes review: spawn a **fresh subagent** to review the diff against the
-     repo's `.context` (real tests? value objects over primitives? ports/adapters respected?
-     defensive smells?).
+   - *Standards* — fresh-eyes review (`requesting-code-review` / a **fresh subagent**) of the diff
+     against the repo's `.context` (real tests? value objects over primitives? ports/adapters
+     respected? defensive smells?).
    - *Spec* — separately, does the diff implement **what the approved blueprint (phase C) /
      tracker task actually asked for**? Missing requirements, scope creep, or requirements
      implemented wrong. Keep this axis distinct from Standards — clean code that builds the wrong
@@ -101,7 +101,19 @@ approval; D–E then run autonomously except for the Checkpoints below.
    don't hardcode. Run in order, stop at first failure. Ask once if undiscoverable.
 4. **Deliver** with `/create-pr` (the branch already exists): short PR (what/why + tracker link),
    full detail in the task.
-5. **Summary** — print a table: PR URL + files changed (consolidated if multiple slices).
+5. **Closing — report by exception.** The approved blueprint is already shared context: don't
+   repeat it. Print only:
+   - **PR**: the URL, on one line.
+   - **Deviations**: what changed with respect to the blueprint — unplanned work that got in,
+     decisions taken along the way and why.
+   - **Risks and findings** discovered during implementation (including the out-of-scope work
+     noted at Checkpoint 2, which did not make it into the PR).
+   - **Pending**: what was left out and why.
+
+   If there is none of that, the closing is **a single line with the URL** plus "no deviations
+   from the blueprint". Don't print: a ticket/branch/PR table, a list of changed files, or a
+   verification checklist — the gate already ran, and its detail is mentioned only if **it
+   failed or something was skipped** (that one *is* mandatory to report).
 
 ## Checkpoints (hard stops, by trigger — not by phase)
 
@@ -127,6 +139,7 @@ your explicit "yes" it runs the full skill (never a diluted inline version, neve
 | `to-tickets` | C | by signals (size, slices, deps) |
 | `tdd` | E (feature/bugfix) | inomitible |
 | `diagnose` | E (bugfix) | always for bugs |
+| `requesting-code-review` | E (hardening) | always |
 | `create-pr` | E (delivery) | always (non-analysis) |
 
 ## Where things live (two homes)
