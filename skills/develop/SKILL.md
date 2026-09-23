@@ -65,37 +65,64 @@ Use the model-invocable cores (`/grilling`, `/domain-modeling`), not `grill-me`/
 sole mechanism that maintains it. For risky decisions (state machines, data models), suggest a
 throwaway scratchpad prototype first. **Grilling: confirm in one line → on your "yes", run.**
 
+**Mark the hard decisions.** When the grilling closes, flag the decisions that meet all three
+criteria in `domain-modeling`'s [DECISIONS-FORMAT.md](../domain-modeling/DECISIONS-FORMAT.md) —
+hard to reverse, surprising without context, the result of a real trade-off. Nothing is written
+yet: they carry their reasoning into the blueprint and the tracker task, and `/domain-modeling`
+(when running) records the durable ones as decision records. Settle any **new seam under test**
+(see C) here too — it is a design decision, not a blueprint detail.
+
 ### C · Blueprint — the single human approval gate
 
-Produce the plan via plan mode: context, decisions, numbered steps, file table,
-compatibility, verification. **Declare visual impact here** (yes/no) so the later visual
-checkpoint is predictable. If signals warrant (many slices, dependency ordering), suggest
+Produce the plan via plan mode ([BLUEPRINT.md](BLUEPRINT.md)): context, decisions (hard ones
+flagged, with their reasoning), numbered steps, file table, **seams under test**, compatibility,
+verification. **Declare visual impact and data impact here** (yes/no each) so the later
+checkpoints are predictable. If signals warrant (many slices, dependency ordering), suggest
 `/to-tickets` for vertical tracer-bullet slices. This is the **only** mandatory human
 approval; D–E then run autonomously except for the Checkpoints below.
 
+**Seams under test** are the public interfaces through which each behavior will be observed — an
+endpoint, a use case, a rendered page. Prefer existing seams and the highest level that reaches
+the behavior. The ideal number of *new* seams is zero: inventing one here means the design was
+not closed in B — go back rather than patch it into the plan.
+
 ### D · Registration — after approval only
 
-1. Create a task/issue in your **issue tracker** (see `docs/agents/issue-tracker.md`; GitHub by
-   default). Run `/setup` once per repo if the tracker isn't configured yet.
-2. Create the branch **by hand**, before any commit, following your repo's branch-naming
-   convention. Commits must never land on the main branch.
-3. Keep the blueprint in the scratchpad, linked from the tracker task — never scattered `.md` in
+1. **Read the registration convention**: the repo's `.context/work-registration.md` if it has one
+   (tracker, list/labels, task prefix, branch naming); otherwise the issue tracker in
+   `docs/agents/issue-tracker.md` (GitHub by default — run `/setup` once per repo if it isn't
+   configured). Never invent a list, prefix or naming scheme — ask once if neither exists.
+2. **Adopt, don't duplicate**: if the request already points to a task, use it; otherwise create
+   one. Its description carries the reasoning of the hard decisions from B.
+3. Create the branch **by hand**, before any commit, following that convention. Commits must
+   never land on the main branch.
+4. Keep the blueprint in the scratchpad, linked from the tracker task — never scattered `.md` in
    the repo tree.
 
 ### E · Implementation loop
 
 1. **Build** = run the branch's execution core (`branches/<branch>.md`). For feature/bugfix
-   this is the **TDD loop, RED-first — inomitible**, not "build then test".
-2. **Hardening (two axes + mechanical):**
-   - *Standards* — fresh-eyes review (`requesting-code-review` / a **fresh subagent**) of the diff
-     against the repo's `.context` (real tests? value objects over primitives? ports/adapters
-     respected? defensive smells?).
-   - *Spec* — separately, does the diff implement **what the approved blueprint (phase C) /
-     tracker task actually asked for**? Missing requirements, scope creep, or requirements
-     implemented wrong. Keep this axis distinct from Standards — clean code that builds the wrong
-     thing still fails here.
+   this is the **TDD loop, RED-first — inomitible**, not "build then test". Every test goes
+   through a seam named in the blueprint; behavior that reaches none is not a license to test
+   internals → Checkpoint 3.
+2. **Hardening — two axes in parallel + mechanical.** Freeze the diff (`git diff <base>...HEAD`)
+   and launch **two fresh subagents in parallel** (`requesting-code-review`'s reviewer or a plain
+   subagent), each with its own input and a capped report (~400 words):
+   - *Standards* — input: the diff + the repo's `.context/` + [SMELL-BASELINE.md](SMELL-BASELINE.md)
+     **pasted into the prompt**, not linked (a smell named without its definition finds different
+     things on each run). Real tests through the named seams? Value objects over primitives?
+     Ports/adapters respected? Defensive smells? Documented repo conventions **outrank** the
+     heuristic smells.
+   - *Spec* — input: the diff + the approved blueprint + the tracker task. Does the diff implement
+     **what was actually asked for**? Missing requirements, scope creep, or requirements
+     implemented wrong.
+
+   Report the results under `## Standards` and `## Spec` without re-ranking across axes — kept
+   apart, a clean Standards pass can't hide a Spec failure (clean code that builds the wrong thing
+   still fails).
    - *Mechanical* — cheap pattern checks (e.g. loose assertions, raw literals in tests) per repo
      conventions.
+
    Fix what review finds **before** the gate.
 3. **Verification gate** — **discover** the repo's CI commands (package.json / CI / `.context`),
    don't hardcode. Run in order, stop at first failure. Ask once if undiscoverable.
@@ -108,7 +135,7 @@ approval; D–E then run autonomously except for the Checkpoints below.
      decisions taken along the way and why.
    - **Risks and findings** discovered during implementation (including the out-of-scope work
      noted at Checkpoint 2, which did not make it into the PR).
-   - **Pending**: what was left out and why.
+   - **Pending**: what was left out and why (including a data notice parked at Checkpoint 4).
 
    If there is none of that, the closing is **a single line with the URL** plus "no deviations
    from the blueprint". Don't print: a ticket/branch/PR table, a list of changed files, or a
@@ -123,7 +150,15 @@ D–E run autonomously **except** when a trigger fires:
    typecheck/lint ≠ correct render).
 2. **Out-of-scope work appears** → **stop & ask if it blocks** the main work; otherwise **note it
    and continue**, report at the end (never fold it into this PR).
-3. **Genuine design gap** → stop & ask.
+3. **Genuine design gap** → stop & ask. This includes **behavior that reaches no seam named in
+   the blueprint**: a missing seam is a design finding, not permission to test internals.
+4. **Data impact** — the diff changes the shape of persisted data (which paths count — schemas,
+   models, migrations — is the repo's `.context/` call; decide from the diff paths, not from
+   memory) → draft a notice for the downstream data consumers the repo documents: collections or
+   tables and fields as they appear in storage, what is added / renamed / retyped / deleted, and
+   **whether existing records are backfilled or left as-is**. You approve the draft before it goes
+   out. If the repo names no consumers or channel, ask once; if there is nowhere to send it yet,
+   park it and list it under **Pending** in the closing.
 
 ## Delegation
 
@@ -139,7 +174,7 @@ your explicit "yes" it runs the full skill (never a diluted inline version, neve
 | `to-tickets` | C | by signals (size, slices, deps) |
 | `tdd` | E (feature/bugfix) | inomitible |
 | `diagnose` | E (bugfix) | always for bugs |
-| `requesting-code-review` | E (hardening) | always |
+| `requesting-code-review` | E (hardening) | always — two reviewers in parallel (Standards / Spec) |
 | `create-pr` | E (delivery) | always (non-analysis) |
 
 ## Where things live (two homes)

@@ -15,9 +15,9 @@ flowchart TD
     S0{"Step 0 · detect branch<br/>infer + confirm"}
     S0 --> A["A · Discovery<br/>map impact — Plan / Explore"]
     A --> B["B · Alignment<br/>/grilling (+ /domain-modeling if it touches the domain)"]
-    B --> C{"C · Blueprint<br/>⏸ single human approval gate"}
+    B --> C{"C · Blueprint<br/>⏸ single human approval gate<br/>seams under test · visual + data impact"}
     C -->|approved| D["D · Registration<br/>tracker task + branch"]
-    D --> E["E · Implementation<br/>build · harden (Standards + Spec) · verify · deliver"]
+    D --> E["E · Implementation<br/>build through named seams · harden (Standards ∥ Spec) · verify · deliver"]
     E --> K{"execution core<br/>by branch"}
     K -->|feature| F["tdd — RED first"]
     K -->|bugfix| G["diagnose → regression test"]
@@ -64,7 +64,7 @@ Or copy `skills/*` into your Claude Code skills directory. Then run `/setup` onc
 
 ## Conventions live in your repo, not here
 
-Everything project-specific — test commands, architecture naming, CI, PR rules, the domain glossary — lives in your repo's `.context/`. The skills **read** it; they hardcode nothing.
+Everything project-specific — test commands, architecture naming, CI, PR rules, the domain glossary, how work gets registered (`work-registration.md`: tracker, prefixes, branch naming) and who consumes your persisted data — lives in your repo's `.context/`. The skills **read** it; they hardcode nothing.
 
 Start from [`foundation/`](./foundation/) — a **loaded, opinionated baseline** of DDD/hexagonal/TDD doctrine (core) plus a catalogue of patterns. Copy it into a repo as `.context/` and **extend** it; it is a base to grow, not empty templates. See [`foundation/README.md`](./foundation/README.md).
 
