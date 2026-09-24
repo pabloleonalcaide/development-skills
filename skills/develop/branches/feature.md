@@ -18,9 +18,13 @@ Delegate the loop to `/tdd`. Before coding, read the repo's `.context/`:
 | **Use case / application service** | unit test RED for the behavior (happy + each error/branch) | implement the use case to green |
 | **Domain element** (value object / aggregate / domain service) | **no dedicated test** — covered black-box via the use case that exercises it | only test directly if complexity warrants (per `testing.md`) |
 
+The sub-type only picks the entry point: the test itself goes through a **seam named in the
+blueprint** (*Seams under test*). If the behavior reaches none, don't open a side door into
+internals — that's a design gap (Checkpoint 3).
+
 ## Loop
 
-1. Write the failing test at the right level. Run it — confirm RED for the right reason.
+1. Write the failing test at the right level, through a named seam. Run it — confirm RED for the right reason.
 2. Minimal code to green. No more than the test demands.
 3. Refactor with tests green. Apply architecture rules (layer deps, value objects over
    primitives, ports/adapters, DI registration) per `.context/architecture.md`.
@@ -35,4 +39,4 @@ Delegate the loop to `/tdd`. Before coding, read the repo's `.context/`:
 - Spikes belong in the scratchpad prototype (phase B), never as untested production code here.
 - Register DI (repository / use case / handler) and wiring per `.context/architecture.md` — easy
   to forget, breaks at runtime.
-- Then return to phase E: hardening (two axes) → gate → `/create-pr`.
+- Then return to phase E: hardening (two axes in parallel) → gate → `/create-pr`.
