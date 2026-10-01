@@ -106,8 +106,9 @@ not closed in B — go back rather than patch it into the plan.
    through a seam named in the blueprint; behavior that reaches none is not a license to test
    internals → Checkpoint 3.
 2. **Hardening — two axes in parallel + mechanical.** Freeze the diff (`git diff <base>...HEAD`)
-   and launch **two fresh subagents in parallel** (`requesting-code-review`'s reviewer or a plain
-   subagent), each with its own input and a capped report (~400 words):
+   and launch **two fresh subagents in parallel** (`general-purpose`, never a fork), each
+   prompt starting with [REVIEWER.md](REVIEWER.md) **pasted in**, then its own input and a
+   capped report (~400 words):
    - *Standards* — input: the diff + the repo's `.context/` + [SMELL-BASELINE.md](SMELL-BASELINE.md)
      **pasted into the prompt**, not linked (a smell named without its definition finds different
      things on each run). Real tests through the named seams? Value objects over primitives?
@@ -174,7 +175,6 @@ your explicit "yes" it runs the full skill (never a diluted inline version, neve
 | `to-tickets` | C | by signals (size, slices, deps) |
 | `tdd` | E (feature/bugfix) | inomitible |
 | `diagnose` | E (bugfix) | always for bugs |
-| `requesting-code-review` | E (hardening) | always — two reviewers in parallel (Standards / Spec) |
 | `create-pr` | E (delivery) | always (non-analysis) |
 
 ## Where things live (two homes)
