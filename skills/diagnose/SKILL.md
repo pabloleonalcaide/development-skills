@@ -44,6 +44,11 @@ A 30-second flaky loop is barely better than no loop. A 2-second deterministic l
 
 The goal is not a clean repro but a **higher reproduction rate**. Loop the trigger 100×, parallelise, add stress, narrow timing windows, inject sleeps. A 50%-flake bug is debuggable; 1% is not — keep raising the rate until it's debuggable.
 
+Two common sources of flakiness in test suites:
+
+- **Tests that guess at timing** (`sleep`, `setTimeout`, fixed delays) — replace the guess with a wait on the real condition. See [condition-based-waiting.md](condition-based-waiting.md).
+- **Test pollution** — a test passes alone but fails in the suite, or the suite leaves stray files/state behind. Bisect the polluter with `scripts/find-polluter.sh <file_to_check> <test_pattern>`.
+
 ### When you genuinely cannot build a loop
 
 Stop and say so explicitly. List what you tried. Ask the user for: (a) access to whatever environment reproduces it, (b) a captured artifact (HAR file, log dump, core dump, screen recording with timestamps), or (c) permission to add temporary production instrumentation. Do **not** proceed to hypothesise without a loop.
@@ -84,6 +89,8 @@ Tool preference:
 2. **Targeted logs** at the boundaries that distinguish hypotheses.
 3. Never "log everything and grep".
 
+**Trace to the source.** When the symptom surfaces deep in the call stack (wrong path, wrong directory, bad value), don't fix where it throws: walk the call chain backwards to the original trigger and fix there. See [root-cause-tracing.md](root-cause-tracing.md).
+
 **Tag every debug log** with a unique prefix, e.g. `[DEBUG-a4f2]`. Cleanup at the end becomes a single grep. Untagged logs survive; tagged logs die.
 
 **Perf branch.** For performance regressions, logs are usually wrong. Instead: establish a baseline measurement (timing harness, `performance.now()`, profiler, query plan), then bisect. Measure first, fix second.
@@ -115,3 +122,5 @@ Required before declaring done:
 - [ ] The hypothesis that turned out correct is stated in the commit / PR message — so the next debugger learns
 
 **Then ask: what would have prevented this bug?** If the answer involves architectural change (no good test seam, tangled callers, hidden coupling) hand off to the `/improve-codebase-architecture` skill with the specifics. Make the recommendation **after** the fix is in, not before — you have more information now than when you started.
+
+If the bug came from **invalid data** reaching a layer that trusted it, one check at the fix site is not enough — validate at each layer the data crosses so the bug becomes structurally impossible. See [defense-in-depth.md](defense-in-depth.md).

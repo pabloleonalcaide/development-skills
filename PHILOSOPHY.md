@@ -22,4 +22,4 @@ Every non-trivial task earns the same backbone (`/develop`): discover → **alig
 - **Not a replacement for judgment.** The skills structure the work; they don't do the thinking.
 
 ## Credit
-Derived from [mattpocock/skills](https://github.com/mattpocock/skills) (MIT). The align-before-code flow, the grilling loop and the domain-modeling approach originate there; the `develop` router, the branch model, the cores/wrappers split and the agnostic packaging are this repo's.
+Derived from [mattpocock/skills](https://github.com/mattpocock/skills) (MIT). The align-before-code flow, the grilling loop and the domain-modeling approach originate there; the `develop` router, the branch model, the cores/wrappers split and the agnostic packaging are this repo's. `receiving-code-review` and the debugging references in `diagnose` (root-cause tracing, condition-based waiting, defense in depth, `find-polluter.sh`) are adapted from [obra/superpowers](https://github.com/obra/superpowers) (MIT).
