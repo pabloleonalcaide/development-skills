@@ -48,6 +48,7 @@ flowchart TD
 | `to-tickets` | break a plan into independently-grabbable tracer-bullet tickets |
 | `tdd` | red-green-refactor loop |
 | `diagnose` | disciplined reproduce → root-cause → regression-test loop |
+| `receiving-code-review` | verify review feedback before implementing it; push back with evidence |
 | `prototype` | throwaway prototype to answer a design question |
 | `create-pr` | commit, push, open the PR (generic) |
 | `setup` | scaffold a repo's tracker / labels / domain-doc config |
@@ -70,4 +71,4 @@ Start from [`foundation/`](./foundation/) — a **loaded, opinionated baseline**
 
 ## Credit
 
-Derived from [mattpocock/skills](https://github.com/mattpocock/skills) (MIT). See [LICENSE](./LICENSE) and [PHILOSOPHY.md](./PHILOSOPHY.md#credit).
+Derived from [mattpocock/skills](https://github.com/mattpocock/skills) (MIT). `receiving-code-review` and the debugging references in `diagnose` are adapted from [obra/superpowers](https://github.com/obra/superpowers) (MIT). See [LICENSE](./LICENSE) and [PHILOSOPHY.md](./PHILOSOPHY.md#credit).
