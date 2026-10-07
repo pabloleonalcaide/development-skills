@@ -1,6 +1,6 @@
 ---
 name: develop
-description: Orchestrates any non-trivial development or analysis task end-to-end — discovery, alignment, blueprint, registration, implementation and delivery. Routes to a branch (feature/bugfix/refactor/analysis) and reuses specialized skills (grilling, domain-modeling, tdd, diagnose, to-tickets, create-pr). Use when starting a feature, bugfix, refactor, or codebase analysis/audit, or when the user says "let's build this", "let's implement", "analyze X", or invokes /develop.
+description: Orchestrates any non-trivial development or analysis task end-to-end — discovery, alignment, blueprint, registration, implementation and delivery. Routes to a branch (feature/bugfix/refactor/deprecation/analysis) and reuses specialized skills (grilling, domain-modeling, tdd, diagnose, deprecation, security-hardening, api-design, observability, to-tickets, create-pr). Use when starting a feature, bugfix, refactor, or codebase analysis/audit, or when the user says "let's build this", "let's implement", "analyze X", or invokes /develop.
 ---
 
 # develop
@@ -29,6 +29,7 @@ before proceeding ("I'll treat this as a *bugfix*, ok?").
 | **feature** | new code / endpoint / use case | TDD loop (`tdd`) — RED first | tests + build + visual (if UI) → PR |
 | **bugfix** | something broken / regression | `diagnose` → RED regression test | regression test green → PR |
 | **refactor** | behavior-preserving change | existing tests as the contract | tests still green → PR |
+| **deprecation** | remove / rename / migrate away from code, fields, endpoints, flags | `deprecation` (consumer search, expand/contract) | consumers proven at 0, or the expand/contract step declared → PR |
 | **analysis** | audit / investigation, no code | discovery + adversarial verification | verified findings report → **no PR** |
 
 **One primary branch per task.** If work of a different nature appears mid-flight, it is a
@@ -76,8 +77,11 @@ yet: they carry their reasoning into the blueprint and the tracker task, and `/d
 
 Produce the plan via plan mode ([BLUEPRINT.md](BLUEPRINT.md)): context, decisions (hard ones
 flagged, with their reasoning), numbered steps, file table, **seams under test**, compatibility,
-verification. **Declare visual impact and data impact here** (yes/no each) so the later
-checkpoints are predictable. If signals warrant (many slices, dependency ordering), suggest
+verification. **Declare the impacts here** (yes/no each) so the later checkpoints and skills are
+predictable: **visual, data, security, API contract, observability**. Each *yes* among the
+last three means its skill (`security-hardening`, `api-design`, `observability`) runs before
+the blueprint is final — its decisions go into Decisions and its Verification checklist into
+the hardening's *Standards* input. If signals warrant (many slices, dependency ordering), suggest
 `/to-tickets` for vertical tracer-bullet slices. This is the **only** mandatory human
 approval; D–E then run autonomously except for the Checkpoints below.
 
@@ -128,8 +132,12 @@ not closed in B — go back rather than patch it into the plan.
    Report the results under `## Standards` and `## Spec` without re-ranking across axes — kept
    apart, a clean Standards pass can't hide a Spec failure (clean code that builds the wrong thing
    still fails).
-   - *Mechanical* — cheap pattern checks (e.g. loose assertions, raw literals in tests) per repo
-     conventions.
+   - *Mechanical* — run [scripts/guard-bar.sh](scripts/guard-bar.sh) `<base>`: it lists added
+     suppressions (`@ts-ignore`, `eslint-disable`, `biome-ignore`, coverage ignores), skipped or
+     focused tests, loose assertions, stubs, deleted tests/assertions and quality-bar changes in
+     config. Classify every hit: unjustified → fix; justified → keep and say why in the closing.
+     **Tightening the bar is silent; loosening it is loud.** Add any repo-specific cheap checks
+     (e.g. raw literals in tests) per conventions.
 
    Fix what review finds **before** the gate.
 3. **Verification gate** — **discover** the repo's CI commands (package.json / CI / `.context`),
@@ -143,7 +151,9 @@ not closed in B — go back rather than patch it into the plan.
      decisions taken along the way and why.
    - **Risks and findings** discovered during implementation (including the out-of-scope work
      noted at Checkpoint 2, which did not make it into the PR).
-   - **Pending**: what was left out and why (including a data notice parked at Checkpoint 4).
+   - **Pending**: what was left out and why (including a data notice parked at Checkpoint 4 and
+     the out-of-scope notes from Checkpoint 2). **Offer to create them as tracker tasks** in one
+     line; create them only on your yes.
 
    If there is none of that, the closing is **a single line with the URL** plus "no deviations
    from the blueprint". Don't print: a ticket/branch/PR table, a list of changed files, or a
@@ -189,6 +199,10 @@ your explicit "yes" it runs the full skill (never a diluted inline version, neve
 | `to-tickets` | C | by signals (size, slices, deps) |
 | `tdd` | E (feature/bugfix) | non-skippable |
 | `diagnose` | E (bugfix) | always for bugs |
+| `deprecation` | E (deprecation) | always for the deprecation branch |
+| `security-hardening` | B–C | when the blueprint declares security impact |
+| `api-design` | B–C | when the blueprint declares API contract impact |
+| `observability` | B–C | when the blueprint declares observability impact |
 | `create-pr` | E (delivery) | always (non-analysis) |
 
 ## When NOT to use

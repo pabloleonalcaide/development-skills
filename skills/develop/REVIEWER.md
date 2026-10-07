@@ -21,6 +21,12 @@ nothing else; the other axis is someone else's job.
 - **The diff, not the codebase.** Report only what the diff introduces or changes. Pre-existing
   debt is out of scope unless the diff makes it worse.
 
+## Questions worth asking (Standards axis)
+
+- **Does this reduce complexity or just relocate it?** Count the concepts a reader must hold to
+  follow the changed path, before and after. A refactor that moves code into new files without
+  lowering that count is a `should-fix`.
+
 ## Output
 
 A list ordered by severity, **at most ~400 words**:

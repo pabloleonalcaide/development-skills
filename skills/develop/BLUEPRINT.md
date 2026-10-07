@@ -7,7 +7,7 @@
 What and why, in one short paragraph. Link the tracker task / source.
 
 ## Branch
-feature | bugfix | refactor | analysis  — and one line on why.
+feature | bugfix | refactor | deprecation | analysis  — and one line on why.
 
 ## Decisions
 The resolved decision tree from the alignment grilling (scope, needs, trade-offs). Bullet each call made.
@@ -36,6 +36,19 @@ seam and point to the decision in B that introduced it — ideally there are non
 **yes / no.** Does the change alter the shape of persisted data (added / renamed / retyped /
 deleted fields; backfill or not)? If yes → a notice to the downstream data consumers is a hard
 checkpoint.
+
+## Security impact
+**yes / no.** New or changed trust boundary — authn/authz, payments, external input, webhooks,
+file paths, outbound requests, secrets, new dependencies? If yes → `security-hardening` runs
+before this blueprint is final.
+
+## API contract impact
+**yes / no.** New or changed endpoint, request/response/event shape, error format, or a
+retryable operation? If yes → `api-design` runs before this blueprint is final.
+
+## Observability impact
+**yes / no.** New entry point (endpoint, cron, job, consumer) or third-party integration? If
+yes → `observability` runs before this blueprint is final.
 
 ## Verification
 The repo's CI commands to run, in order (discovered, not assumed). Test levels touched.
