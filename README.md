@@ -8,24 +8,26 @@ At its center is `develop`: a thin **router** that gives every non-trivial task 
 
 ## The flow
 
-`develop` routes each task through five phases and one of four branches. Phases A–D are common; the branch (detected in Step 0) governs the execution core in phase E and the exit.
+`develop` routes each task through five phases and one of five branches. Phases A–D are common; the branch (detected in Step 0) governs the execution core in phase E and the exit.
 
 ```mermaid
 flowchart TD
     S0{"Step 0 · detect branch<br/>infer + confirm"}
     S0 --> A["A · Discovery<br/>map impact — Plan / Explore"]
     A --> B["B · Alignment<br/>/grilling (+ /domain-modeling if it touches the domain)"]
-    B --> C{"C · Blueprint<br/>⏸ single human approval gate<br/>seams under test · visual + data impact"}
+    B --> C{"C · Blueprint<br/>⏸ single human approval gate<br/>seams under test · impacts: visual · data · security · API · observability"}
     C -->|approved| D["D · Registration<br/>tracker task + branch"]
     D --> E["E · Implementation<br/>build through named seams · harden (Standards ∥ Spec) · verify · deliver"]
     E --> K{"execution core<br/>by branch"}
     K -->|feature| F["tdd — RED first"]
     K -->|bugfix| G["diagnose → regression test"]
     K -->|refactor| H["existing tests as contract"]
+    K -->|deprecation| J["deprecation — consumers at 0 / expand-contract"]
     K -->|analysis| I["verified report"]
     F --> PR([Pull Request])
     G --> PR
     H --> PR
+    J --> PR
     I --> REP([Report — no PR])
 ```
 
@@ -34,6 +36,7 @@ flowchart TD
 | feature | new code / use case | `tdd` — RED first | tests + build → PR |
 | bugfix | something broken | `diagnose` → RED regression test | regression green → PR |
 | refactor | behavior-preserving | existing tests as contract | tests still green → PR |
+| deprecation | remove / rename / migrate away | `deprecation` — consumer search, expand/contract | consumers at 0 or step declared → PR |
 | analysis | audit, no code | discovery + adversarial verification | verified report — no PR |
 
 ## Skills
@@ -48,10 +51,16 @@ flowchart TD
 | `to-tickets` | break a plan into independently-grabbable tracer-bullet tickets |
 | `tdd` | red-green-refactor loop |
 | `diagnose` | disciplined reproduce → root-cause → regression-test loop |
+| `security-hardening` | threat model + controls at design time (triggered by security impact) |
+| `api-design` | stable contracts, add-not-modify, idempotency keys (triggered by API impact) |
+| `observability` | logs/metrics/traces/alerts for the on-call's questions (triggered by observability impact) |
+| `deprecation` | consumer search, expand/contract, safe removal (deprecation branch core) |
 | `receiving-code-review` | verify review feedback before implementing it; push back with evidence |
 | `prototype` | throwaway prototype to answer a design question |
 | `create-pr` | commit, push, open the PR (generic) |
 | `setup` | scaffold a repo's tracker / labels / domain-doc config |
+| `handoff` | compact the session for another agent, including what was approved |
+| `write-a-skill` | author skills with the house anatomy (rationalizations, red flags, verification) |
 
 **Cores vs wrappers:** `grilling` and `domain-modeling` are model-invocable — `develop` and the model call them directly. `grill-me` / `grill-with-docs` are user-only entry points (`disable-model-invocation`); you invoke them with `/grill-me`, the model doesn't.
 
@@ -71,4 +80,4 @@ Start from [`foundation/`](./foundation/) — a **loaded, opinionated baseline**
 
 ## Credit
 
-Derived from [mattpocock/skills](https://github.com/mattpocock/skills) (MIT). `receiving-code-review` and the debugging references in `diagnose` are adapted from [obra/superpowers](https://github.com/obra/superpowers) (MIT). See [LICENSE](./LICENSE) and [PHILOSOPHY.md](./PHILOSOPHY.md#credit).
+Derived from [mattpocock/skills](https://github.com/mattpocock/skills) (MIT). `receiving-code-review` and the debugging references in `diagnose` are adapted from [obra/superpowers](https://github.com/obra/superpowers) (MIT). The process-skill anatomy, `security-hardening`, `api-design`, `observability`, `deprecation` and several techniques in `develop`/`grilling` draw on [addyosmani/agent-skills](https://github.com/addyosmani/agent-skills) (MIT). See [LICENSE](./LICENSE) and [PHILOSOPHY.md](./PHILOSOPHY.md#credit).
