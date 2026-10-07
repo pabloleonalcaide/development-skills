@@ -1,6 +1,6 @@
 # Branch: feature
 
-New code: endpoint, use case, domain behavior. Execution core = **TDD loop, RED-first. Inomitible.**
+New code: endpoint, use case, domain behavior. Execution core = **TDD loop, RED-first. Non-skippable.**
 
 Delegate the loop to `/tdd`. Before coding, read the repo's `.context/`:
 `architecture*.md` (which layering/pattern), `testing.md` (which test level + conventions),

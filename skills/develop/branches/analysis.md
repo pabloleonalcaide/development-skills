@@ -5,7 +5,7 @@ Audit / investigation, no production code. Exit = **verified findings report, no
 ## Loop
 
 1. **Discovery** (phase A) at full depth — parallel `Explore`/`Plan` by subsystem.
-   Greps cover `.ts/.tsx/.js/.jsx`.
+   Greps cover every source extension in play (a single-extension sweep hides callers).
 2. **Gather findings**, each with concrete evidence (`file:line`). No claim without a location.
 3. **Adversarial verification (the exit gate).** For each material finding, spawn a fresh
    subagent prompted to **refute** it. A finding enters the report as *fact* only if it

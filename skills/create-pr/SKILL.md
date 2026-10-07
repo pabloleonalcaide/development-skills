@@ -12,7 +12,7 @@ Ship the finished work as a pull request. The branch already exists (created in 
 1. **Confirm the branch and diff.** `git status` + `git diff <base>...HEAD`. Never open a PR from the main branch.
 2. **Commit** any pending work in atomic commits with clear messages (follow `.context/styling.md` if present).
 3. **Push** the branch: `git push -u origin HEAD`.
-4. **Open the PR** with `gh pr create`:
+4. **Open the PR** with the tracker's CLI — `gh pr create` for GitHub, `glab mr create` for GitLab (see `docs/agents/issue-tracker.md`):
    - **Title**: what the change does, imperative mood.
    - **Body**: what / why + a link to the tracker task. Keep it short — detail lives in the task.
    - **Reviewers / labels / CI**: apply whatever your repo documents in `.context/`. This skill hardcodes none.

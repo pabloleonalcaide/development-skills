@@ -60,7 +60,7 @@ Default: each role's string equals its name. Ask the user if they want to overri
 
 **Section C — Domain docs.**
 
-> Explainer: Some skills (`improve-codebase-architecture`, `diagnose`, `tdd`) read `.context/glossary.md` to learn the project's domain language, and `.context/decisions/` for past architectural decisions. They need to know whether the repo has one global context or multiple (e.g. a monorepo with separate frontend/backend contexts) so they look in the right place.
+> Explainer: Some skills (`domain-modeling`, `diagnose`, `tdd`) read `.context/glossary.md` to learn the project's domain language, and `.context/decisions/` for past architectural decisions. They need to know whether the repo has one global context or multiple (e.g. a monorepo with separate frontend/backend contexts) so they look in the right place.
 
 Confirm the layout:
 

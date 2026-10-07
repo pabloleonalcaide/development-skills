@@ -1,6 +1,6 @@
 ---
 name: develop
-description: Orchestrates any non-trivial development or analysis task end-to-end — discovery, alignment, blueprint, registration, implementation and delivery. Routes to a branch (feature/bugfix/refactor/analysis) and reuses specialized skills (grilling, domain-modeling, tdd, diagnose, to-tickets, create-pr, prototype). Use when starting a feature, bugfix, refactor, or codebase analysis/audit, or when the user says "let's build this", "let's implement", "analyze X", or invokes /develop.
+description: Orchestrates any non-trivial development or analysis task end-to-end — discovery, alignment, blueprint, registration, implementation and delivery. Routes to a branch (feature/bugfix/refactor/analysis) and reuses specialized skills (grilling, domain-modeling, tdd, diagnose, to-tickets, create-pr). Use when starting a feature, bugfix, refactor, or codebase analysis/audit, or when the user says "let's build this", "let's implement", "analyze X", or invokes /develop.
 ---
 
 # develop
@@ -15,7 +15,7 @@ At every step that needs conventions, **read the repo's `.context/`** (`testing.
 `architecture*.md`, `good_practices.md`, `styling.md`, and `CLAUDE.md`/`AGENTS.md`). If a needed
 convention file is missing, **say so and ask** — never invent it.
 
-> This armazón is **opinionated**: it assumes **DDD + hexagonal architecture + strict TDD**.
+> This framework is **opinionated**: it assumes **DDD + hexagonal architecture + strict TDD**.
 > See [PHILOSOPHY.md](../../PHILOSOPHY.md). Framework- and project-specific detail (naming,
 > layering, DI wiring) lives in the repo's `.context/architecture.md`, not here.
 
@@ -63,7 +63,7 @@ Use the model-invocable cores (`/grilling`, `/domain-modeling`), not `grill-me`/
 — those are user-only entry points (`disable-model-invocation`) and are invisible to the router.
 `.context/glossary.md` is kept alive **only** through this step — the alignment grilling is the
 sole mechanism that maintains it. For risky decisions (state machines, data models), suggest a
-throwaway scratchpad prototype first. **Grilling: confirm in one line → on your "yes", run.**
+throwaway scratchpad prototype first (`/prototype`, if installed). **Grilling: confirm in one line → on your "yes", run.**
 
 **Mark the hard decisions.** When the grilling closes, flag the decisions that meet all three
 criteria in `domain-modeling`'s [DECISIONS-FORMAT.md](../domain-modeling/DECISIONS-FORMAT.md) —
@@ -108,7 +108,7 @@ not closed in B — go back rather than patch it into the plan.
 ### E · Implementation loop
 
 1. **Build** = run the branch's execution core (`branches/<branch>.md`). For feature/bugfix
-   this is the **TDD loop, RED-first — inomitible**, not "build then test". Every test goes
+   this is the **TDD loop, RED-first — non-skippable**, not "build then test". Every test goes
    through a seam named in the blueprint; behavior that reaches none is not a license to test
    internals → Checkpoint 3. **Print the RED summary** (tests, failure reason) and continue to
    GREEN in the same turn — the RED gate enforces *order*, not approval.
@@ -185,14 +185,15 @@ your explicit "yes" it runs the full skill (never a diluted inline version, neve
 |-------|-------|---------|
 | `grilling` (core) | B | almost always — the alignment interview |
 | `domain-modeling` (core) | B | added to `grilling` when work touches the domain (introduces/redefines a business noun) |
+| `prototype` | B | suggested for risky decisions (state machines, data models) |
 | `to-tickets` | C | by signals (size, slices, deps) |
-| `tdd` | E (feature/bugfix) | inomitible |
+| `tdd` | E (feature/bugfix) | non-skippable |
 | `diagnose` | E (bugfix) | always for bugs |
 | `create-pr` | E (delivery) | always (non-analysis) |
 
 ## Where things live (two homes)
 
-- **Process** → this skills armazón. One source of truth for *how we work*.
+- **Process** → this skills framework. One source of truth for *how we work*.
 - **Conventions** → `<repo>/.context/` (per repo). What's specific to each repo.
 - **Ephemeral** (blueprint, analysis report) → scratchpad, linked from the tracker. Never
   scattered `.md` in the repo tree.

@@ -6,7 +6,7 @@ Something is broken / regressed. Execution core = `/diagnose` + **regression tes
 
 1. **Enter `/diagnose`** — reproduce the bug deterministically before theorizing.
 2. **Root-cause before any guard.** Open the file where the effect actually lives. Defensive
-   guards without a root cause are wasted commits (repo/feedback rule). Don't blame a refactor
+   guards without a root cause are wasted commits. Don't blame a refactor
    without opening the code that produces the effect.
 3. **Write the regression test RED** at the level that reproduces it (unit / integration / e2e
    per `testing.md`), through a **seam named in the blueprint** — the highest one that reaches
