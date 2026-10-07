@@ -110,3 +110,33 @@ After all tests pass, look for [refactor candidates](refactoring.md):
 [ ] Code is minimal for this test
 [ ] No speculative features added
 ```
+
+## When NOT to use
+
+- Throwaway spikes and prototypes (they live in the scratchpad and get deleted).
+- Purely mechanical changes with no new behavior (renames, type-only migrations) — the existing suite is the contract.
+- Behavior-preserving refactors — use the existing tests; add characterization tests only where coverage is missing.
+
+## Common Rationalizations
+
+| Rationalization | Reality |
+|---|---|
+| "This is too simple to need a test" | Simple code breaks too; the test costs a minute and pins the behavior for the next refactor. |
+| "I'll write the tests after, it's faster" | Tests written after the code test what you built, not what was asked — and they never see a RED. |
+| "I'll write all the tests now and implement after" | Horizontal slicing: tests of imagined behavior that pass when it breaks. One test → one implementation. |
+| "Mocking this internal collaborator is easier" | It couples the test to the implementation; mock only at system boundaries ([mocking.md](mocking.md)). |
+| "It's RED, I'll tidy the code a bit while I'm here" | Never refactor while RED — you lose the signal that tells you which change broke what. |
+
+## Red Flags
+
+- A new test **passes on its first run** — you never saw the RED, so you don't know it can fail. Break the code on purpose or fix the test.
+- A test fails for the wrong reason (import/compile error, missing fixture) and you move on to GREEN.
+- A test reaches into private methods, internal state or the database instead of the public interface.
+- Several tests were written before any implementation.
+- An internal rename makes tests fail while behavior is unchanged.
+
+## Verification
+
+- [ ] Every new behavior has a test that was seen failing for the right reason (RED output observed)
+- [ ] All tests pass through public interfaces; mocks only at boundaries
+- [ ] The full suite at the touched level is green after the last refactor step

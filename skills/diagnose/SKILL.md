@@ -124,3 +124,29 @@ Required before declaring done:
 **Then ask: what would have prevented this bug?** If the answer involves architectural change (no good test seam, tangled callers, hidden coupling) hand off to an architecture-improvement skill (e.g. `/improve-codebase-architecture`, if installed) with the specifics — otherwise record it as a finding. Make the recommendation **after** the fix is in, not before — you have more information now than when you started.
 
 If the bug came from **invalid data** reaching a layer that trusted it, one check at the fix site is not enough — validate at each layer the data crosses so the bug becomes structurally impossible. See [defense-in-depth.md](defense-in-depth.md).
+
+## When NOT to use
+
+- The cause is already known and confirmed by a failing test — go straight to the fix.
+- Feature work or open-ended exploration with nothing broken — that is not a bug.
+
+## Common Rationalizations
+
+| Rationalization | Reality |
+|---|---|
+| "I already know the cause, no need for the loop" | You'll be right often; the rest of the time you ship a fix to a bug you never reproduced. Without the loop you can't prove either. |
+| "I'll add a guard here and it's done" | A guard without a root cause hides the symptom and leaves the trigger alive. Trace to the source. |
+| "There's no time to write the regression test" | Without it the bug can return silently; if no correct seam exists, say so — that is the finding. |
+| "The optimization is a bit faster, I'll keep it" | If it doesn't beat the noise of the baseline, it's complexity without gain. Neutral = revert. |
+
+## Red Flags
+
+- A fix is proposed before the bug has been reproduced.
+- Only one hypothesis was considered.
+- Several variables changed in the same probe.
+- Untagged debug logs, or `[DEBUG-…]` lines left in the diff.
+- A perf "improvement" reported without a baseline measurement.
+
+## Verification
+
+Phase 6's checklist is the verification gate. Do not claim the bug fixed without the re-run of the Phase 1 loop.

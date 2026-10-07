@@ -191,6 +191,38 @@ your explicit "yes" it runs the full skill (never a diluted inline version, neve
 | `diagnose` | E (bugfix) | always for bugs |
 | `create-pr` | E (delivery) | always (non-analysis) |
 
+## When NOT to use
+
+- Trivial edits (a typo, a one-line config change) — just do them.
+- Pure questions about the code — answer them; use the `analysis` branch only when a verified report is the deliverable.
+- Inside a subagent — the router runs in the main conversation, where the human gate lives.
+
+## Common Rationalizations
+
+| Rationalization | Reality |
+|---|---|
+| "The blueprint already covers this, I'll skip the checkpoint" | Checkpoints fire on triggers the blueprint could not foresee; the blueprint authorizes the plan, not surprises. |
+| "It's small, no need to align" | Small tasks with an unstated assumption produce the biggest rewrites. Infer + confirm takes one line. |
+| "I'll write the code and then the test" | Plan approval does not exempt TDD. RED first, always. |
+| "Let me ask again before pushing" | The approved blueprint authorized commits, push and PR. Re-asking is noise; only a Checkpoint stops the flow. |
+| "Hardening can be a fork, it's faster" | A fork inherits the author's context and reviews with the author's blind spots. Fresh `general-purpose` subagents only. |
+
+## Red Flags
+
+- A commit exists before the blueprint was approved, or on the main branch.
+- A test reaches no seam named in the blueprint.
+- The hardening ran on a moving diff (code changed while reviewers were reading).
+- The closing repeats the blueprint, lists files, or hides a skipped/failed gate.
+- Out-of-scope changes folded into the PR instead of noted.
+
+## Verification
+
+- [ ] Blueprint approved, branch created by hand, no commits on main
+- [ ] RED observed for each behavior before its GREEN
+- [ ] Both hardening axes (+ mechanical) reported; findings fixed or justified
+- [ ] Gate commands discovered and run; output green (or failure reported)
+- [ ] Every checkpoint that fired was resolved; parked items listed under Pending
+
 ## Where things live (two homes)
 
 - **Process** → this skills framework. One source of truth for *how we work*.
