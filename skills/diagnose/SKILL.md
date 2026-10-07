@@ -95,6 +95,10 @@ Tool preference:
 
 **Perf branch.** For performance regressions, logs are usually wrong. Instead: establish a baseline measurement (timing harness, `performance.now()`, profiler, query plan), then bisect. Measure first, fix second.
 
+- **Beat the noise, not just the mean.** Run baseline and candidate several times; a change only counts if it improves beyond the run-to-run variance.
+- **Neutral = revert.** A change that doesn't clearly beat the noise is reverted, even if it "should" help — it adds complexity for no measured gain.
+- **Keep a ledger of every attempt**, including the reverted ones (`PERF-LEDGER.md` in the scratchpad: change · measurement before/after · kept/reverted · why), and link it from the report or the task. Dead ideas stay dead instead of being retried next time.
+
 ## Phase 5 — Fix + regression test
 
 Write the regression test **before the fix** — but only if there is a **correct seam** for it.
@@ -105,7 +109,7 @@ A correct seam is one where the test exercises the **real bug pattern** as it oc
 
 If a correct seam exists:
 
-1. Turn the minimised repro into a failing test at that seam.
+1. Turn the minimised repro into a failing test at that seam. Prefer to have a fresh subagent write it from the symptom and the seam alone — without your hypothesis or fix — so it tests the bug, not your fix.
 2. Watch it fail.
 3. Apply the fix.
 4. Watch it pass.
