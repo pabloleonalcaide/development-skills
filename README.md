@@ -17,7 +17,7 @@ flowchart TD
     A --> B["B · Alignment<br/>/grilling (+ /domain-modeling if it touches the domain)"]
     B --> C{"C · Blueprint<br/>⏸ single human approval gate<br/>seams under test · impacts: visual · data · security · API · observability"}
     C -->|approved| D["D · Registration<br/>tracker task + branch"]
-    D --> E["E · Implementation<br/>build through named seams · harden (Standards ∥ Spec) · verify · deliver"]
+    D --> E["E · Implementation<br/>build through named seams · harden (Standards ∥ Spec + guard-bar) · verify · deliver"]
     E --> K{"execution core<br/>by branch"}
     K -->|feature| F["tdd — RED first"]
     K -->|bugfix| G["diagnose → regression test"]
@@ -34,10 +34,12 @@ flowchart TD
 | Branch | When | Execution core | Exit |
 |--------|------|----------------|------|
 | feature | new code / use case | `tdd` — RED first | tests + build → PR |
-| bugfix | something broken | `diagnose` → RED regression test | regression green → PR |
+| bugfix | something broken | `diagnose` → RED regression test, written blind to the fix | regression green → PR |
 | refactor | behavior-preserving | existing tests as contract | tests still green → PR |
 | deprecation | remove / rename / migrate away | `deprecation` — consumer search, expand/contract | consumers at 0 or step declared → PR |
-| analysis | audit, no code | discovery + adversarial verification | verified report — no PR |
+| analysis | audit, no code | discovery + blind adversarial verification | verified report — no PR |
+
+**Impacts drive the specialist skills.** The blueprint declares five impacts (yes/no): visual and data arm checkpoints; security, API contract and observability each run their skill (`security-hardening`, `api-design`, `observability`) before the blueprint is final, and its verification checklist feeds the *Standards* reviewer. The *Mechanical* hardening axis is a script, `develop/scripts/guard-bar.sh`, that lists anything in the diff lowering the quality bar (suppressions, skipped or deleted tests, loose assertions, weakened config).
 
 ## Skills
 
