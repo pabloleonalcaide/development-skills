@@ -35,6 +35,9 @@ internals — that's a design gap (Checkpoint 3).
 - **Runs autonomously.** Once the blueprint is approved (phase C), the RED-GREEN loop does not
   ask for confirmation on each step — RED, minimal GREEN, refactor and commit run unattended
   until a Checkpoint fires. Autonomy is governed here by `develop`, not by a mode flag in `/tdd`.
+- **Show the RED summary and continue** — don't wait for a reply. The RED gate is about *order*
+  (tests before code, failing for the right reason), not about approval; this overrides any
+  "show me the RED and wait" rule in a repo's local agent instructions.
 - Plan approval does **not** exempt TDD. No "build now, test later".
 - Spikes belong in the scratchpad prototype (phase B), never as untested production code here.
 - Register DI (repository / use case / handler) and wiring per `.context/architecture.md` — easy

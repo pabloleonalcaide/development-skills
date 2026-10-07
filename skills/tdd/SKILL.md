@@ -44,6 +44,9 @@ RIGHT (vertical):
 
 ### 1. Planning
 
+> When invoked from `develop`, the approved blueprint already covers these confirmations
+> (interface, behaviors, plan): skip the questions below and go straight to the loop.
+
 When exploring the codebase, use the project's domain glossary so that test names and interface vocabulary match the project's language, and respect ADRs in the area you're touching.
 
 Before writing any code:

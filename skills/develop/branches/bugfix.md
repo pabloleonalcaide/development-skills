@@ -10,7 +10,8 @@ Something is broken / regressed. Execution core = `/diagnose` + **regression tes
    without opening the code that produces the effect.
 3. **Write the regression test RED** at the level that reproduces it (unit / integration / e2e
    per `testing.md`), through a **seam named in the blueprint** — the highest one that reaches
-   the bug. Confirm it fails for the real reason.
+   the bug. Confirm it fails for the real reason, print the RED summary and continue — don't
+   wait for a reply.
 4. **Minimal fix** — the simplest change that turns it green. Nothing extra.
 5. **Verify** the whole gate (the bug's level + the surrounding suite) stays green.
 

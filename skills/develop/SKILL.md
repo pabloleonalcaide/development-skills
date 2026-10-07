@@ -81,6 +81,12 @@ checkpoints are predictable. If signals warrant (many slices, dependency orderin
 `/to-tickets` for vertical tracer-bullet slices. This is the **only** mandatory human
 approval; D–E then run autonomously except for the Checkpoints below.
 
+**Approving the blueprint is the durable authorization for the whole task**: writing tests and
+code, RED→GREEN without pausing, atomic commits, push, and opening the PR with `/create-pr`.
+Don't ask again for any of these — only a Checkpoint stops the flow. This overrides any
+"show me / wait for" RED rule in a repo's local agent instructions and the confirmation steps
+of `/tdd`'s planning section.
+
 **Seams under test** are the public interfaces through which each behavior will be observed — an
 endpoint, a use case, a rendered page. Prefer existing seams and the highest level that reaches
 the behavior. The ideal number of *new* seams is zero: inventing one here means the design was
@@ -104,7 +110,8 @@ not closed in B — go back rather than patch it into the plan.
 1. **Build** = run the branch's execution core (`branches/<branch>.md`). For feature/bugfix
    this is the **TDD loop, RED-first — inomitible**, not "build then test". Every test goes
    through a seam named in the blueprint; behavior that reaches none is not a license to test
-   internals → Checkpoint 3.
+   internals → Checkpoint 3. **Print the RED summary** (tests, failure reason) and continue to
+   GREEN in the same turn — the RED gate enforces *order*, not approval.
 2. **Hardening — two axes in parallel + mechanical.** Freeze the diff (`git diff <base>...HEAD`)
    and launch **two fresh subagents in parallel** (`general-purpose`, never a fork), each
    prompt starting with [REVIEWER.md](REVIEWER.md) **pasted in**, then its own input and a
@@ -127,8 +134,8 @@ not closed in B — go back rather than patch it into the plan.
    Fix what review finds **before** the gate.
 3. **Verification gate** — **discover** the repo's CI commands (package.json / CI / `.context`),
    don't hardcode. Run in order, stop at first failure. Ask once if undiscoverable.
-4. **Deliver** with `/create-pr` (the branch already exists): short PR (what/why + tracker link),
-   full detail in the task.
+4. **Deliver** with `/create-pr` **without asking** — the blueprint authorized it (the branch
+   already exists): short PR (what/why + tracker link), full detail in the task.
 5. **Closing — report by exception.** The approved blueprint is already shared context: don't
    repeat it. Print only:
    - **PR**: the URL, on one line.
@@ -160,6 +167,12 @@ D–E run autonomously **except** when a trigger fires:
    **whether existing records are backfilled or left as-is**. You approve the draft before it goes
    out. If the repo names no consumers or channel, ask once; if there is nowhere to send it yet,
    park it and list it under **Pending** in the closing.
+5. **RED for the wrong reason** (compile/import error, passes on first run) that you can't fix in
+   the test itself → stop & ask.
+6. **Gate fails** and the fix is outside the blueprint's scope → stop & ask.
+
+Nothing else stops the flow: printing the RED, committing, pushing and opening the PR are not
+checkpoints.
 
 ## Delegation
 
