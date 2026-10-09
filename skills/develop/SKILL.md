@@ -47,6 +47,21 @@ When grepping, cover every source extension in play — a mixed codebase hides c
 single-extension sweep misses.
 Output: files, utilities, patterns, cross-cutting concerns affected.
 
+**Premises — verify before aligning.** Read the ticket itself **before** any related memory or
+recent-session context. Then list the premises the work rests on, each with the source that settles
+it, and mark it verified (with evidence) or assumed:
+
+| Premise kind | Source that settles it |
+|---|---|
+| who emits / consumes an event, who calls an endpoint | grep emitters and callers (all extensions) |
+| what exists in prod (endpoint, env var, infra) | deployment config / infra repo / observability |
+| whether code is live | callers + production traffic (logs, metrics) |
+| what the UI or data allows (sortable, default order…) | the component config / the real query |
+| what CI runs | the actual CI definition (don't assume the provider) |
+
+A premise that comes from memory or from earlier work, not from the ticket or the code, counts as
+**assumed**. The grilling starts from the assumed ones.
+
 ### B · Alignment — grill almost always
 
 Suggest a grilling to fix scope, needs and the decision tree, for anything but
@@ -142,6 +157,10 @@ not closed in B — go back rather than patch it into the plan.
    Fix what review finds **before** the gate.
 3. **Verification gate** — **discover** the repo's CI commands (package.json / CI / `.context`),
    don't hardcode. Run in order, stop at first failure. Ask once if undiscoverable.
+   **Preflight** (only on a fresh worktree or after switching branch): rebuild the workspace's
+   internal dependencies (stale builds from another branch fail the gate falsely), check the
+   container runtime when the gate needs it, and warn if free disk is low. A preflight failure is
+   reported as environment, not as a failure of the change.
 4. **Deliver** with `/create-pr` **without asking** — the blueprint authorized it (the branch
    already exists): short PR (what/why + tracker link), full detail in the task.
 5. **Closing — report by exception.** The approved blueprint is already shared context: don't
@@ -232,6 +251,7 @@ your explicit "yes" it runs the full skill (never a diluted inline version, neve
 ## Verification
 
 - [ ] Blueprint approved, branch created by hand, no commits on main
+- [ ] Ticket premises listed and marked verified/assumed before the grilling
 - [ ] RED observed for each behavior before its GREEN
 - [ ] Both hardening axes (+ mechanical) reported; findings fixed or justified
 - [ ] Gate commands discovered and run; output green (or failure reported)

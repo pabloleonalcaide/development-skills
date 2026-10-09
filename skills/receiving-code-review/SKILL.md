@@ -205,3 +205,25 @@ You understand 1,2,3,6. Unclear on 4,5.
 ## GitHub Thread Replies
 
 When replying to inline review comments on GitHub, reply in the comment thread (`gh api repos/{owner}/{repo}/pulls/{pr}/comments/{id}/replies`), not as a top-level PR comment.
+
+## Working Through a PR's Review End to End
+
+When asked to address the review comments on a PR ("atiende los comentarios de la PR #N",
+"address the review on #N"):
+
+1. **Collect** the unresolved threads: `gh pr view <N> --comments` plus
+   `gh api repos/{owner}/{repo}/pulls/<N>/comments` (inline). List them, numbered.
+2. **Classify** each one with the Response Pattern above: (a) clear fix, (b) unclear → ask,
+   (c) push back with technical reasoning. Ask about every (b) together, before implementing.
+3. **Branch:** work on the PR's own branch (`gh pr checkout <N>` or the existing worktree).
+   Check `git branch --show-current` before editing.
+4. **Fix** each (a), one at a time. If the comment is about behavior, write the failing test
+   first (RED), then the fix. Reuse the patterns and helpers the repo already has — search for
+   similar code before writing new code, and follow the repo's `.context/` conventions.
+5. **Gate:** run the repo's CI commands for what you touched (discover them; rebuild internal deps if the branch was just checked out). Do not push on red.
+6. **Commit and push** (never silence `git commit` output; check that the commit exists).
+7. **Reply in each thread** (see GitHub Thread Replies): for a fix, the commit SHA and one line
+   on what changed; for a (c), the reasoned decline is **drafted and shown to the user first**,
+   never posted on your own.
+8. **Scope changed?** Update the PR description and leave a note on the linked tracker task (the subtask, not the parent).
+9. **Report** a table: thread → classification → commit SHA / pending decision.
