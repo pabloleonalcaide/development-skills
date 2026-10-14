@@ -63,6 +63,7 @@ flowchart TD
 | `setup` | scaffold a repo's tracker / labels / domain-doc config |
 | `handoff` | compact the session for another agent, including what was approved |
 | `write-a-skill` | author skills with the house anatomy (rationalizations, red flags, verification) |
+| `disk-cleanup` | reclaim disk safely: stale worktrees (squash-merge aware), Docker test leftovers, regenerable caches |
 
 **Cores vs wrappers:** `grilling` and `domain-modeling` are model-invocable — `develop` and the model call them directly. `grill-me` / `grill-with-docs` are user-only entry points (`disable-model-invocation`); you invoke them with `/grill-me`, the model doesn't.
 

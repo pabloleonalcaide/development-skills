@@ -17,6 +17,15 @@ Ship the finished work as a pull request. The branch already exists (created in 
    - **Body**: what / why + a link to the tracker task. Keep it short — detail lives in the task. If that task has subtasks, link the subtask this change implements, never the parent; ask if it's ambiguous.
    - **Reviewers / labels / CI**: apply whatever your repo documents in `.context/`. This skill hardcodes none.
 5. **Report** the PR URL.
+6. **Remove the worktree the PR came from.** If the PR was opened from a linked worktree (not
+   the main one), the branch now lives on origin; bring it back later if more work is needed.
+   Leave the worktree and remove it in one command, so the shell never sits in a deleted directory:
+   ```bash
+   wt="$(git rev-parse --show-toplevel)"; main="$(git worktree list --porcelain | head -1 | cut -d' ' -f2-)"
+   [ "$wt" != "$main" ] && cd "$main" && ~/.claude/skills/disk-cleanup/scripts/worktree-cleanup.sh --remove "$wt"
+   ```
+   It refuses, changing nothing, if there are uncommitted changes or the branch tip is not on
+   origin — then report why and keep it. Large `node_modules` make this slow: run it in the background.
 
 ## Notes
 
