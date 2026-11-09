@@ -11,7 +11,7 @@ achievement — but only once you've **proven** nothing depends on it.
 ## When NOT to use
 
 - Behavior-preserving restructuring with the same public surface — that is a refactor.
-- Language or type-system migrations with no change in behavior — mechanical migration.
+- Language or type-system migrations with no change in behavior — also a refactor (pure mechanical diff).
 - Dependency vulnerability bumps.
 
 ## Process
