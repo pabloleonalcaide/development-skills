@@ -11,7 +11,7 @@ named volume, uncommitted work or an unpushed commit.
 
 ## When NOT to use
 
-- Only stale worktrees to tidy, no space pressure → run `scripts/worktree-cleanup.sh` on its own.
+- Only stale worktrees to tidy, no space pressure → `/clean-worktrees` (same script, narrower).
 - Removing the worktree a PR was just opened from → `/create-pr` does that itself.
 - Docker data the user wants gone on purpose (reset a database, drop a named volume) — that is a
   deliberate, targeted command, not a cleanup sweep.
@@ -32,6 +32,10 @@ All scripts live in `scripts/` next to this file; run them from inside the repo.
    <path>`), not `--execute`.
 5. **Execute** the confirmed areas:
    - worktrees: `scripts/worktree-cleanup.sh --execute` (SAFE ones) / `--remove <path>`
+     Before running, state per worktree whether its local branch will be deleted, as the
+     `--plan` reports it — never from memory. A directory that survives removal ("Directory
+     not empty") or a worktree that needs `--force` → give the user the exact command to run
+     as `! <command>`, then re-run `--plan`. Never run `rm -rf` or `--force` yourself.
    - Docker: `scripts/docker-cleanup.sh --execute` (needs the daemon up)
    - caches: `scripts/cache-cleanup.sh --execute` (stop dev servers first; it skips caches in use)
    Long removals (worktrees) go to the background; report when they finish.
@@ -54,7 +58,8 @@ once no `com.docker.virtualization`/`krun` process is left (the VM is down, data
 ## Red Flags
 
 - `docker system prune`, `docker volume prune -a` or `--volumes` in a command.
-- `git worktree remove --force` or `git branch -D` without the user naming that exact item.
+- The agent itself running `rm -rf` or `git worktree remove --force` (the user runs them).
+- `git branch -D` without the user naming that exact item.
 - Deleting before the user saw the plan, or executing "all" when they picked a subset.
 - Reporting "freed X GB" without a `df -h` after.
 
