@@ -15,6 +15,9 @@ Ship the finished work as a pull request. The branch already exists (created in 
 4. **Open the PR** with the tracker's CLI — `gh pr create` for GitHub, `glab mr create` for GitLab (see `docs/agents/issue-tracker.md`):
    - **Title**: what the change does, imperative mood.
    - **Body**: what / why + a link to the tracker task. Keep it short — detail lives in the task. If that task has subtasks, link the subtask this change implements, never the parent; ask if it's ambiguous.
+   - **Explainer** (when the caller, e.g. `/develop`, passes one): a URL goes on its own line under
+     the what/why ("Full explanation: <URL>"); a markdown explainer is appended at the end of the
+     body as-is (already wrapped in `<details>`). Without one, nothing changes.
    - **Reviewers / labels / CI**: apply whatever your repo documents in `.context/`. This skill hardcodes none.
 5. **Report** the PR URL.
 6. **Remove the worktree the PR came from.** If the PR was opened from a linked worktree (not
