@@ -161,11 +161,19 @@ not closed in B — go back rather than patch it into the plan.
    internal dependencies (stale builds from another branch fail the gate falsely), check the
    container runtime when the gate needs it, and warn if free disk is low. A preflight failure is
    reported as environment, not as a failure of the change.
-4. **Deliver** with `/create-pr` **without asking** — the blueprint authorized it (the branch
-   already exists): short PR (what/why + tracker link), full detail in the task.
-5. **Closing — report by exception.** The approved blueprint is already shared context: don't
+4. **Explain** — build the PR explainer per [PR-EXPLAINER.md](PR-EXPLAINER.md) from the
+   blueprint, the task and the **frozen** final diff (problem, chosen solution and discarded
+   alternatives, before/after screenshots or a diagram when there is something to see, how to
+   verify). A rich page if the harness can publish one, markdown otherwise. Every non-analysis PR
+   gets one; the blueprint authorized it — don't ask.
+5. **Deliver** with `/create-pr` **without asking** — the blueprint authorized it (the branch
+   already exists): short PR (what/why + tracker link) **plus the explainer** (its URL, or its
+   markdown in a `<details>` block), full detail in the task.
+6. **Closing — report by exception.** The approved blueprint is already shared context: don't
    repeat it. Print only:
    - **PR**: the URL, on one line.
+   - **Explainer**: its URL on one line (with "private — share it with the reviewers" if it is),
+     or "embedded in the PR body" plus the screenshot paths to attach by hand.
    - **Deviations**: what changed with respect to the blueprint — unplanned work that got in,
      decisions taken along the way and why.
    - **Risks and findings** discovered during implementation (including the out-of-scope work
@@ -174,7 +182,7 @@ not closed in B — go back rather than patch it into the plan.
      the out-of-scope notes from Checkpoint 2). **Offer to create them as tracker tasks** in one
      line; create them only on your yes.
 
-   If there is none of that, the closing is **a single line with the URL** plus "no deviations
+   If there is none of that, the closing is **the PR and explainer lines** plus "no deviations
    from the blueprint". Don't print: a ticket/branch/PR table, a list of changed files, or a
    verification checklist — the gate already ran, and its detail is mentioned only if **it
    failed or something was skipped** (that one *is* mandatory to report).
@@ -184,7 +192,8 @@ not closed in B — go back rather than patch it into the plan.
 D–E run autonomously **except** when a trigger fires:
 
 1. **Visual impact declared** → confirm in the browser **before** `/create-pr` (green
-   typecheck/lint ≠ correct render).
+   typecheck/lint ≠ correct render). Save before/after screenshots as files outside the repo
+   tree: they go into the PR explainer.
 2. **Out-of-scope work appears** → **stop & ask if it blocks** the main work; otherwise **note it
    and continue**, report at the end (never fold it into this PR).
 3. **Genuine design gap** → stop & ask. This includes **behavior that reaches no seam named in
@@ -200,8 +209,8 @@ D–E run autonomously **except** when a trigger fires:
    the test itself → stop & ask.
 6. **Gate fails** and the fix is outside the blueprint's scope → stop & ask.
 
-Nothing else stops the flow: printing the RED, committing, pushing and opening the PR are not
-checkpoints.
+Nothing else stops the flow: printing the RED, committing, pushing, building the explainer and
+opening the PR are not checkpoints.
 
 ## Delegation
 
@@ -247,6 +256,7 @@ your explicit "yes" it runs the full skill (never a diluted inline version, neve
 - The hardening ran on a moving diff (code changed while reviewers were reading).
 - The closing repeats the blueprint, lists files, or hides a skipped/failed gate.
 - Out-of-scope changes folded into the PR instead of noted.
+- A PR without an explainer, or an explainer built before the diff was frozen.
 
 ## Verification
 
@@ -255,6 +265,7 @@ your explicit "yes" it runs the full skill (never a diluted inline version, neve
 - [ ] RED observed for each behavior before its GREEN
 - [ ] Both hardening axes (+ mechanical) reported; findings fixed or justified
 - [ ] Gate commands discovered and run; output green (or failure reported)
+- [ ] PR explainer built and linked from (or embedded in) the PR; the closing says which
 - [ ] Every checkpoint that fired was resolved; parked items listed under Pending
 
 ## Where things live (two homes)
@@ -263,3 +274,5 @@ your explicit "yes" it runs the full skill (never a diluted inline version, neve
 - **Conventions** → `<repo>/.context/` (per repo). What's specific to each repo.
 - **Ephemeral** (blueprint, analysis report) → scratchpad, linked from the tracker. Never
   scattered `.md` in the repo tree.
+- **For the reviewer** (PR explainer) → a page published by the harness and linked from the PR,
+  or a `<details>` block in the PR body.
